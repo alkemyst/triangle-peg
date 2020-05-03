@@ -224,21 +224,16 @@ bool exploreGame(const Triangle& prevTriangle, MoveVector moveVector, std::vecto
   auto moves = prevTriangle.findLegalMoves();
   // Game over. did we win?
   if (moves.size()==0) {
-    // we won
+    // We only record when win occurs
     if (prevTriangle.getNMarbles()==1) {
       winningMoves.push_back(moveVector);
       std::cerr << "Winning in " << moveVector.scoreMoves() << std::endl;
       Triangle::listMoves(moveVector);
       prevTriangle.print();
       std::cerr << std::endl;
-    } else {
-      std::cerr << "Losing" << std::endl;
-      Triangle::listMoves(moveVector);
-      prevTriangle.print();
-      std::cerr << std::endl;
     }
   } else {
-    // We can carry on recursively
+    // Since there are possible moves, then we can carry on recursively
     for (auto& aMove : moves) {
       Triangle nextTriangle = prevTriangle;
       nextTriangle.executeMove(aMove);
@@ -252,26 +247,17 @@ bool exploreGame(const Triangle& prevTriangle, MoveVector moveVector, std::vecto
 
 int main(int argc, char* argv[]) {
   Triangle myTriangle(4);
-  myTriangle.remove(1);
   myTriangle.remove(2);
-  myTriangle.remove(3);
-  myTriangle.remove(4);
-  //myTriangle.remove(5);
-  //myTriangle.remove(6);
-  myTriangle.remove(7);
-  myTriangle.remove(8);
+  // myTriangle.remove(2);
+  // myTriangle.remove(3);
+  // myTriangle.remove(4);
+  // myTriangle.remove(5);
+  // myTriangle.remove(6);
+  // myTriangle.remove(7);
+  // myTriangle.remove(8);
   myTriangle.print();
   std::cout << std::endl;
   std::cout << std::endl;
-
-  // MoveVector allMoves = myTriangle.findLegalMoves();
-  // for (auto it : allMoves) {
-  //   std::cout << std::endl;
-  //   std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << " over " << it.captureSpot.getSpot() << std::endl;
-  //   Triangle newTriangle = myTriangle;
-  //   newTriangle.executeMove(it);
-  //   newTriangle.print();
-  // }
 
   MoveVector moveVector;
   std::vector<MoveVector> winningMoves;
