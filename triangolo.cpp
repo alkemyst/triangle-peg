@@ -69,6 +69,7 @@ public:
   bool move(const int& direction) {
     return move(direction, 1);
   };
+  friend bool operator==(const Coordinate& lhs, const Coordinate& rhs);
   
 private:
   int Spot;
@@ -77,12 +78,32 @@ private:
   int C;
 };
 
+bool operator==(const Coordinate& lhs, const Coordinate& rhs){
+  return (lhs.Spot == rhs.Spot);
+}
+
 class Move {
 public:
   Coordinate fromSpot;
   Coordinate toSpot;
   Coordinate captureSpot;
   bool carryOn=false;
+};
+
+class MoveVector : public std::vector<Move> {
+public:
+  int scoreMoves() const {
+    int result=0;
+    for(auto it = std::vector<Move>::begin(); it != std::vector<Move>::end(); ++it) {
+      result++;
+      // if this is not the first move we can count
+      if ( it != std::vector<Move>::begin() ) {
+	const auto& prevIt = std::prev(it);
+	if (prevIt->toSpot == it->fromSpot) result--;
+      }
+    }
+    return result;
+  };
 };
 
 class Triangle {
@@ -98,13 +119,13 @@ public:
   void add(const int& iSpot);
   void remove(const Coordinate& aCoord);
   void add(const Coordinate& aCoord);
-  std::vector<Move> findLegalMoves() const;
+  MoveVector findLegalMoves() const;
   void print() const;
   int getNMarbles() const {
     return nSpots-emptySpots.size();
   };
 
-  static void listMoves(const std::vector<Move>&);
+  static void listMoves(const MoveVector&);
   void executeMove(const Move& aMove);
 };
 
@@ -158,8 +179,8 @@ void Triangle::print() const {
   std::cout << getNMarbles() << " marbles" << std::endl;
 }
 
-std::vector<Move> Triangle::findLegalMoves() const {
-  std::vector<Move> result;
+MoveVector Triangle::findLegalMoves() const {
+  MoveVector result;
   for (int i=1; i<=nSpots; ++i) {
     Coordinate thisSpot(i);
 
@@ -193,20 +214,20 @@ std::vector<Move> Triangle::findLegalMoves() const {
   return result;
 }
 
-void Triangle::listMoves(const std::vector<Move>& moveVector) {
+void Triangle::listMoves(const MoveVector& moveVector) {
   for (auto it : moveVector) {
     std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << std::endl;
   }
 }
 
-bool exploreGame(const Triangle& prevTriangle, std::vector<Move> moveVector, std::vector<std::vector<Move>>& winningMoves) {
+bool exploreGame(const Triangle& prevTriangle, MoveVector moveVector, std::vector<MoveVector>& winningMoves) {
   auto moves = prevTriangle.findLegalMoves();
   // Game over. did we win?
   if (moves.size()==0) {
     // we won
     if (prevTriangle.getNMarbles()==1) {
       winningMoves.push_back(moveVector);
-      std::cerr << "Winning" << std::endl;
+      std::cerr << "Winning in " << moveVector.scoreMoves() << std::endl;
       Triangle::listMoves(moveVector);
       prevTriangle.print();
       std::cerr << std::endl;
@@ -221,7 +242,7 @@ bool exploreGame(const Triangle& prevTriangle, std::vector<Move> moveVector, std
     for (auto& aMove : moves) {
       Triangle nextTriangle = prevTriangle;
       nextTriangle.executeMove(aMove);
-      std::vector<Move> nextMoveVector = moveVector;
+      MoveVector nextMoveVector = moveVector;
       nextMoveVector.push_back(aMove);
       exploreGame(nextTriangle, nextMoveVector, winningMoves);
     }
@@ -236,12 +257,14 @@ int main(int argc, char* argv[]) {
   myTriangle.remove(3);
   myTriangle.remove(4);
   //myTriangle.remove(5);
-  //Triangle.remove(6);
+  //myTriangle.remove(6);
   myTriangle.remove(7);
   myTriangle.remove(8);
   myTriangle.print();
+  std::cout << std::endl;
+  std::cout << std::endl;
 
-  // std::vector<Move> allMoves = myTriangle.findLegalMoves();
+  // MoveVector allMoves = myTriangle.findLegalMoves();
   // for (auto it : allMoves) {
   //   std::cout << std::endl;
   //   std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << " over " << it.captureSpot.getSpot() << std::endl;
@@ -250,8 +273,8 @@ int main(int argc, char* argv[]) {
   //   newTriangle.print();
   // }
 
-  std::vector<Move> moveVector;
-  std::vector<std::vector<Move> > winningMoves;
+  MoveVector moveVector;
+  std::vector<MoveVector> winningMoves;
   exploreGame(myTriangle, moveVector, winningMoves);
   // Triangle::listMoves(allMoves);
   return 0;
