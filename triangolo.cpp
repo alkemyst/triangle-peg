@@ -81,7 +81,7 @@ class Move {
 public:
   Coordinate fromSpot;
   Coordinate toSpot;
-  Coordinate overSpot;
+  Coordinate captureSpot;
   bool carryOn=false;
 };
 
@@ -96,6 +96,8 @@ public:
   bool isEmpty(const Coordinate& aCoord);
   void remove(const int& iSpot);
   void add(const int& iSpot);
+  void remove(const Coordinate& aCoord);
+  void add(const Coordinate& aCoord);
   std::vector<Move> findLegalMoves();
   void print();
 
@@ -105,8 +107,9 @@ public:
 
 // For now I am just moving things around
 void Triangle::executeMove(const Move& aMove) {
-  add(aMove.fromSpot.getSpot());
-  remove(aMove.toSpot.getSpot());
+  remove(aMove.fromSpot);
+  remove(aMove.captureSpot);
+  add(aMove.toSpot);
 }
 
 bool Triangle::isEmpty(const int& iSpot) {
@@ -118,13 +121,20 @@ bool Triangle::isEmpty(const Coordinate& aCoord) {
   return isEmpty(aCoord.getSpot());
 }
 
-
 void Triangle::remove(const int& iSpot) {
   emptySpots.insert(iSpot);
 }
 
+void Triangle::remove(const Coordinate& aCoord) {
+  remove(aCoord.getSpot());
+}
+
 void Triangle::add(const int& iSpot) {
   emptySpots.erase(iSpot);
+}
+
+void Triangle::add(const Coordinate& aCoord) {
+  add(aCoord.getSpot());
 }
 
 void Triangle::print() {
@@ -149,12 +159,29 @@ std::vector<Move> Triangle::findLegalMoves() {
   for (int i=1; i<=nSpots; ++i) {
     Coordinate thisSpot(i);
 
-    if (isEmpty(thisSpot)) {
+    // If there is a marble in our spot
+    if (!isEmpty(thisSpot)) {
+      // Check for all possible directions of movement
       for (int dir=0; dir<6; ++dir) {
 	Coordinate nextSpot = thisSpot;
+	// At a distance 2
 	nextSpot.move(dir, 2);
+	// if the landing spot is still inside the triangle
 	if (nextSpot.isInside(nSides)) {
-	  Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);
+	  // If the landing spit is free
+	  if (isEmpty(nextSpot)) {
+	    // And if there is a marble to jump over
+	    Coordinate captureSpot = thisSpot;
+	    captureSpot.move(dir, 1);
+	    if (!isEmpty(captureSpot)) {
+	      // Then we have a capture move
+	      Move newMove;
+	      newMove.fromSpot = thisSpot;
+	      newMove.toSpot = nextSpot;
+	      newMove.captureSpot = captureSpot;
+	      result.push_back(newMove);
+	    }
+	  }
 	}
       }
     }
@@ -176,12 +203,11 @@ int main(int argc, char* argv[]) {
 
   for (auto it : allMoves) {
     std::cout << std::endl;
-    // std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << std::endl;
+    std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << " over " << it.captureSpot.getSpot() << std::endl;
     Triangle newTriangle = myTriangle;
     newTriangle.executeMove(it);
     newTriangle.print();
   }
-
 
   // Triangle::listMoves(allMoves);
   return 0;
