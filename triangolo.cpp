@@ -145,20 +145,6 @@ std::vector<Move> Triangle::findLegalMoves() {
 	nextSpot.move(dir);
 	if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
       }
-      // nextSpot.setAB(thisSpot.getA(), thisSpot.getB()+1);
-      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-      // nextSpot.setAB(thisSpot.getA(), thisSpot.getB()-1);
-      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-      
-      // nextSpot.setBC(thisSpot.getB(), thisSpot.getC()+1);
-      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-      // nextSpot.setBC(thisSpot.getB(), thisSpot.getC()-1);    
-      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-
-      // nextSpot.setBC(thisSpot.getB()+1, thisSpot.getC());
-      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-      // nextSpot.setBC(thisSpot.getB()-1, thisSpot.getC());
-      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
     }
   }
   return result;
