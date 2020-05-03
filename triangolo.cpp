@@ -47,23 +47,27 @@ public:
     return true;
   };
 
-  bool move(const int& direction) {
+  bool move(const int& direction, const int& step) {
     if ((direction<0) || (direction>=6)) return false;
     
     // 0 - East
-    if (direction==0) setAB(A, B+1);
+    if (direction==0) setAB(A, B+step);
     // 1 - NorthEast
-    if (direction==1) setAB(A-1, B);
+    if (direction==1) setAB(A-step, B);
     // 2 - NorthWest
-    if (direction==2) setAC(A-1, C);
+    if (direction==2) setAC(A-step, C);
     // 3 - West
-    if (direction==3) setAB(A, B-1);
+    if (direction==3) setAB(A, B-step);
     // 4 - SouthWest
-    if (direction==4) setAB(A+1, B);
+    if (direction==4) setAB(A+step, B);
     // 5 - SouthEast
-    if (direction==5) setAC(A+1, C);    
+    if (direction==5) setAC(A+step, C);    
 
     return true;
+  };
+  
+  bool move(const int& direction) {
+    return move(direction, 1);
   };
   
 private:
@@ -89,6 +93,7 @@ public:
   std::set<int> emptySpots;
 
   bool isEmpty(const int& iSpot);
+  bool isEmpty(const Coordinate& aCoord);
   void remove(const int& iSpot);
   void add(const int& iSpot);
   std::vector<Move> findLegalMoves();
@@ -108,6 +113,11 @@ bool Triangle::isEmpty(const int& iSpot) {
   if (emptySpots.find(iSpot) != emptySpots.end()) return true;
   else return false;
 }
+
+bool Triangle::isEmpty(const Coordinate& aCoord) {
+  return isEmpty(aCoord.getSpot());
+}
+
 
 void Triangle::remove(const int& iSpot) {
   emptySpots.insert(iSpot);
@@ -139,11 +149,13 @@ std::vector<Move> Triangle::findLegalMoves() {
   for (int i=1; i<=nSpots; ++i) {
     Coordinate thisSpot(i);
 
-    if (isEmpty(thisSpot.getSpot())) {
+    if (isEmpty(thisSpot)) {
       for (int dir=0; dir<6; ++dir) {
 	Coordinate nextSpot = thisSpot;
-	nextSpot.move(dir);
-	if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+	nextSpot.move(dir, 2);
+	if (nextSpot.isInside(nSides)) {
+	  Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);
+	}
       }
     }
   }
