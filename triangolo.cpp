@@ -92,14 +92,17 @@ public:
   Triangle(int pSides) { nSides=pSides ; nSpots=nSides*(nSides+1)/2; }
   std::set<int> emptySpots;
 
-  bool isEmpty(const int& iSpot);
-  bool isEmpty(const Coordinate& aCoord);
+  bool isEmpty(const int& iSpot) const;
+  bool isEmpty(const Coordinate& aCoord) const;
   void remove(const int& iSpot);
   void add(const int& iSpot);
   void remove(const Coordinate& aCoord);
   void add(const Coordinate& aCoord);
-  std::vector<Move> findLegalMoves();
+  std::vector<Move> findLegalMoves() const;
   void print();
+  int getNMarbles() const {
+    return nSpots-emptySpots.size();
+  };
 
   static void listMoves(const std::vector<Move>&);
   void executeMove(const Move& aMove);
@@ -112,12 +115,12 @@ void Triangle::executeMove(const Move& aMove) {
   add(aMove.toSpot);
 }
 
-bool Triangle::isEmpty(const int& iSpot) {
+bool Triangle::isEmpty(const int& iSpot) const {
   if (emptySpots.find(iSpot) != emptySpots.end()) return true;
   else return false;
 }
 
-bool Triangle::isEmpty(const Coordinate& aCoord) {
+bool Triangle::isEmpty(const Coordinate& aCoord) const {
   return isEmpty(aCoord.getSpot());
 }
 
@@ -152,9 +155,10 @@ void Triangle::print() {
     }
     std::cout<<std::endl;
   }
+  std::cout << getNMarbles() << " marbles" << std::endl;
 }
 
-std::vector<Move> Triangle::findLegalMoves() {
+std::vector<Move> Triangle::findLegalMoves() const {
   std::vector<Move> result;
   for (int i=1; i<=nSpots; ++i) {
     Coordinate thisSpot(i);
@@ -195,8 +199,43 @@ void Triangle::listMoves(const std::vector<Move>& moveVector) {
   }
 }
 
+bool exploreGame(const Triangle& prevTriangle, std::vector<Move> moveVector, std::vector<std::vector<Move>>& winningMoves) {
+  auto moves = prevTriangle.findLegalMoves();
+  // Game over. did we win?
+  if (moves.size()==0) {
+    // we won
+    if (prevTriangle.getNMarbles()==1) {
+      winningMoves.push_back(moveVector);
+      std::cerr << "Winning" << std::endl;
+      Triangle::listMoves(moveVector);
+      std::cerr << std::endl;
+    } else {
+      std::cerr << "Losing" << std::endl;
+      Triangle::listMoves(moveVector);
+      std::cerr << std::endl;
+    }
+  } else {
+    // We can carry on recursively
+    for (auto& aMove : moves) {
+      Triangle nextTriangle = prevTriangle;
+      nextTriangle.executeMove(aMove);
+      std::vector<Move> nextMoveVector = moveVector;
+      moveVector.push_back(aMove);
+      exploreGame(nextTriangle, nextMoveVector, winningMoves);
+    }
+  }
+  return true;
+}
+
 int main(int argc, char* argv[]) {
-  Triangle myTriangle(5);
+  Triangle myTriangle(4);
+  myTriangle.remove(1);
+  myTriangle.remove(2);
+  myTriangle.remove(3);
+  myTriangle.remove(4);
+  myTriangle.remove(5);
+  //Triangle.remove(6);
+  myTriangle.remove(7);
   myTriangle.remove(8);
   myTriangle.print();
   std::vector<Move> allMoves = myTriangle.findLegalMoves();
@@ -209,6 +248,9 @@ int main(int argc, char* argv[]) {
     newTriangle.print();
   }
 
+  std::vector<Move> moveVector;
+  std::vector<std::vector<Move> > winningMoves;
+  exploreGame(myTriangle, moveVector, winningMoves);
   // Triangle::listMoves(allMoves);
   return 0;
 };
