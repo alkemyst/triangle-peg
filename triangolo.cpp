@@ -227,10 +227,10 @@ bool exploreGame(const Triangle& prevTriangle, MoveVector moveVector, std::vecto
     // We only record when win occurs
     if (prevTriangle.getNMarbles()==1) {
       winningMoves.push_back(moveVector);
-      std::cerr << "Winning in " << moveVector.scoreMoves() << std::endl;
-      Triangle::listMoves(moveVector);
-      prevTriangle.print();
-      std::cerr << std::endl;
+      // std::cerr << "Winning in " << moveVector.scoreMoves() << std::endl;
+      // Triangle::listMoves(moveVector);
+      // prevTriangle.print();
+      // std::cerr << std::endl;
     }
   } else {
     // Since there are possible moves, then we can carry on recursively
@@ -262,6 +262,12 @@ int main(int argc, char* argv[]) {
   MoveVector moveVector;
   std::vector<MoveVector> winningMoves;
   exploreGame(myTriangle, moveVector, winningMoves);
-  // Triangle::listMoves(allMoves);
+
+  for (auto it : winningMoves) {
+    std::cerr << "Winning in " << it.scoreMoves() << std::endl;
+    Triangle::listMoves(it);
+    std::cerr << std::endl;
+  }
+
   return 0;
 };
