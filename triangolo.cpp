@@ -46,6 +46,25 @@ public:
     if (A>pSide) return false;
     return true;
   };
+
+  bool move(const int& direction) {
+    if ((direction<0) || (direction>=6)) return false;
+    
+    // 0 - East
+    if (direction==0) setAB(A, B+1);
+    // 1 - NorthEast
+    if (direction==1) setAB(A-1, B);
+    // 2 - NorthWest
+    if (direction==2) setAC(A-1, C);
+    // 3 - West
+    if (direction==3) setAB(A, B-1);
+    // 4 - SouthWest
+    if (direction==4) setAB(A+1, B);
+    // 5 - SouthEast
+    if (direction==5) setAC(A+1, C);    
+
+    return true;
+  };
   
 private:
   int Spot;
@@ -104,8 +123,8 @@ void Triangle::print() {
   for (int row=0; row < nSides; ++row) {
     for (int spa=row+1; spa<nSides; spa++) std::cout << " ";
     for (int col=0; col<row+1; col++) {
-      if (isEmpty(pos)) sign = " ◯";
-      else sign = " ⬤";
+      if (isEmpty(pos)) sign = " ◯"; // u25ef
+      else sign = " ⬤"; // u2b24
       // Coordinate test(pos+1);
       // sign = std::to_string(test.isInside(nSides));
       std::cout << sign;
@@ -121,21 +140,25 @@ std::vector<Move> Triangle::findLegalMoves() {
     Coordinate thisSpot(i);
 
     if (isEmpty(thisSpot.getSpot())) {
-      Coordinate nextSpot;
-      nextSpot.setAB(thisSpot.getA(), thisSpot.getB()+1);
-      if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-      nextSpot.setAB(thisSpot.getA(), thisSpot.getB()-1);
-      if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+      for (int dir=0; dir<6; ++dir) {
+	Coordinate nextSpot = thisSpot;
+	nextSpot.move(dir);
+	if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+      }
+      // nextSpot.setAB(thisSpot.getA(), thisSpot.getB()+1);
+      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+      // nextSpot.setAB(thisSpot.getA(), thisSpot.getB()-1);
+      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
       
-      nextSpot.setBC(thisSpot.getB(), thisSpot.getC()+1);
-      if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-      nextSpot.setBC(thisSpot.getB(), thisSpot.getC()-1);    
-      if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+      // nextSpot.setBC(thisSpot.getB(), thisSpot.getC()+1);
+      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+      // nextSpot.setBC(thisSpot.getB(), thisSpot.getC()-1);    
+      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
 
-      nextSpot.setBC(thisSpot.getB()+1, thisSpot.getC());
-      if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
-      nextSpot.setBC(thisSpot.getB()-1, thisSpot.getC());
-      if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+      // nextSpot.setBC(thisSpot.getB()+1, thisSpot.getC());
+      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
+      // nextSpot.setBC(thisSpot.getB()-1, thisSpot.getC());
+      // if (nextSpot.isInside(nSides)) { Move newMove; newMove.fromSpot = thisSpot; newMove.toSpot = nextSpot; result.push_back(newMove);}
     }
   }
   return result;
@@ -149,7 +172,7 @@ void Triangle::listMoves(const std::vector<Move>& moveVector) {
 
 int main(int argc, char* argv[]) {
   Triangle myTriangle(5);
-  myTriangle.remove(15);
+  myTriangle.remove(8);
   myTriangle.print();
   std::vector<Move> allMoves = myTriangle.findLegalMoves();
 
