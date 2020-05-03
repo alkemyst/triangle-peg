@@ -99,7 +99,7 @@ public:
   void remove(const Coordinate& aCoord);
   void add(const Coordinate& aCoord);
   std::vector<Move> findLegalMoves() const;
-  void print();
+  void print() const;
   int getNMarbles() const {
     return nSpots-emptySpots.size();
   };
@@ -140,7 +140,7 @@ void Triangle::add(const Coordinate& aCoord) {
   add(aCoord.getSpot());
 }
 
-void Triangle::print() {
+void Triangle::print() const {
   int pos=1;
   std::string sign="";
   for (int row=0; row < nSides; ++row) {
@@ -208,10 +208,12 @@ bool exploreGame(const Triangle& prevTriangle, std::vector<Move> moveVector, std
       winningMoves.push_back(moveVector);
       std::cerr << "Winning" << std::endl;
       Triangle::listMoves(moveVector);
+      prevTriangle.print();
       std::cerr << std::endl;
     } else {
       std::cerr << "Losing" << std::endl;
       Triangle::listMoves(moveVector);
+      prevTriangle.print();
       std::cerr << std::endl;
     }
   } else {
@@ -220,7 +222,7 @@ bool exploreGame(const Triangle& prevTriangle, std::vector<Move> moveVector, std
       Triangle nextTriangle = prevTriangle;
       nextTriangle.executeMove(aMove);
       std::vector<Move> nextMoveVector = moveVector;
-      moveVector.push_back(aMove);
+      nextMoveVector.push_back(aMove);
       exploreGame(nextTriangle, nextMoveVector, winningMoves);
     }
   }
@@ -233,20 +235,20 @@ int main(int argc, char* argv[]) {
   myTriangle.remove(2);
   myTriangle.remove(3);
   myTriangle.remove(4);
-  myTriangle.remove(5);
+  //myTriangle.remove(5);
   //Triangle.remove(6);
   myTriangle.remove(7);
   myTriangle.remove(8);
   myTriangle.print();
-  std::vector<Move> allMoves = myTriangle.findLegalMoves();
 
-  for (auto it : allMoves) {
-    std::cout << std::endl;
-    std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << " over " << it.captureSpot.getSpot() << std::endl;
-    Triangle newTriangle = myTriangle;
-    newTriangle.executeMove(it);
-    newTriangle.print();
-  }
+  // std::vector<Move> allMoves = myTriangle.findLegalMoves();
+  // for (auto it : allMoves) {
+  //   std::cout << std::endl;
+  //   std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << " over " << it.captureSpot.getSpot() << std::endl;
+  //   Triangle newTriangle = myTriangle;
+  //   newTriangle.executeMove(it);
+  //   newTriangle.print();
+  // }
 
   std::vector<Move> moveVector;
   std::vector<std::vector<Move> > winningMoves;
