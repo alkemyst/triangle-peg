@@ -25,7 +25,13 @@ public:
   };
 
   static void listMoves(const MoveVector&);
-  static bool exploreGame(const Triangle& prevTriangle, MoveVector moveVector, std::vector<MoveVector>& winningMoves);
+  static bool exploreGame(const Triangle& prevTriangle,
+			  MoveVector moveVector,
+			  std::vector<MoveVector>& bestMoves);
+  static bool exploreGameOptimal(const Triangle& prevTriangle,
+				 MoveVector moveVector,
+				 MoveVector& bestMoves,
+				 int& currentBestScore);
   void executeMove(const Move& aMove);
 };
 

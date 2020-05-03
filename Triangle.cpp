@@ -98,26 +98,56 @@ void Triangle::listMoves(const MoveVector& moveVector) {
   }
 }
 
-bool Triangle::exploreGame(const Triangle& prevTriangle, MoveVector moveVector, std::vector<MoveVector>& winningMoves) {
+bool Triangle::exploreGame(const Triangle& prevTriangle,
+			   MoveVector moveVector,
+			   std::vector<MoveVector>& bestMoves) {
   auto moves = prevTriangle.findLegalMoves();
   // Game over. did we win?
   if (moves.size()==0) {
     // We only record when win occurs
     if (prevTriangle.getNMarbles()==1) {
-      winningMoves.push_back(moveVector);
-      // std::cerr << "Winning in " << moveVector.scoreMoves() << std::endl;
-      // Triangle::listMoves(moveVector);
-      // prevTriangle.print();
-      // std::cerr << std::endl;
+      bestMoves.push_back(moveVector);
     }
   } else {
+    // Did we already find a solution better than this one?
+    // if not we carry on the search
     // Since there are possible moves, then we can carry on recursively
     for (auto& aMove : moves) {
       Triangle nextTriangle = prevTriangle;
       nextTriangle.executeMove(aMove);
       MoveVector nextMoveVector = moveVector;
       nextMoveVector.push_back(aMove);
-      exploreGame(nextTriangle, nextMoveVector, winningMoves);
+      exploreGame(nextTriangle, nextMoveVector, bestMoves);
+    }
+  }
+  return true;
+}
+
+bool Triangle::exploreGameOptimal(const Triangle& prevTriangle,
+				  MoveVector moveVector,
+				  MoveVector& bestMoves,
+				  int& currentBestScore) {
+  auto moves = prevTriangle.findLegalMoves();
+  // Game over. did we win?
+  if (moves.size()==0) {
+    // We only record when win occurs
+    if (prevTriangle.getNMarbles()==1) {
+      bestMoves = moveVector;
+      currentBestScore = moveVector.scoreMoves();
+      std::cerr << "current best score is " << currentBestScore << std::endl;
+    }
+  } else {
+    // Did we already find a solution better than this one?
+    // if not we carry on the search
+    if (currentBestScore-1 > moveVector.scoreMoves()) {
+      // Since there are possible moves, then we can carry on recursively
+      for (auto& aMove : moves) {
+	Triangle nextTriangle = prevTriangle;
+	nextTriangle.executeMove(aMove);
+	MoveVector nextMoveVector = moveVector;
+	nextMoveVector.push_back(aMove);
+	exploreGameOptimal(nextTriangle, nextMoveVector, bestMoves, currentBestScore);
+      }
     }
   }
   return true;

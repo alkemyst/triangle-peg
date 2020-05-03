@@ -1,11 +1,11 @@
-all: baseProblem fastestSolution
+all: baseProblem.exe flexiSearch.exe flexiSearchFast.exe
 
 %.o: %.cpp %.h
-	g++ -Werror -fmax-errors=1 -c $< -o $@
+	g++ -Werror -fmax-errors=1 -O3 -c $< -o $@
 
-%: %.cpp Move.o Coordinate.o Triangle.o
-	g++ -Werror -fmax-errors=1 $@.cpp Move.o Coordinate.o Triangle.o -o $@
+%.exe: %.cpp Move.o Coordinate.o Triangle.o
+	g++ -Werror -fmax-errors=1 -O3 $< Move.o Coordinate.o Triangle.o -o $@
 
 clean:
-	rm -f *~ baseProblem *.o
+	rm -f *~ *.exe *.o
 
