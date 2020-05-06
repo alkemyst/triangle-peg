@@ -8,7 +8,7 @@ all: baseProblem.exe flexiSearch.exe flexiSearchFast.exe
 	g++ -pg -Werror -fmax-errors=1 -O3 $< Move.o Coordinate.o Triangle.o -o $@
 
 profile:
-	./flexiSearch.exe 5 1
+	./flexiSearchFast.exe 5 1
 	gprof ./flexiSearchFast.exe | gprof2dot/gprof2dot.py | dot -Tsvg -o output.svg
 
 clean:
