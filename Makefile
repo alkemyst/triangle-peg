@@ -12,5 +12,5 @@ profile:
 	gprof ./flexiSearchFast.exe | gprof2dot/gprof2dot.py | dot -Tsvg -o output.svg
 
 clean:
-	rm -f *~ *.exe *.o
+	rm -f *~ *.exe *.o *.png *.svg *.out
 
