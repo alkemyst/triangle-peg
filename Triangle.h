@@ -47,7 +47,7 @@ public:
 			  MoveVector moveVector,
 			  std::vector<MoveVector>& bestMoves);
   static bool exploreGameOptimal(const Triangle& prevTriangle,
-				 MoveVector moveVector,
+				 MoveVector& moveVector,
 				 MoveVector& bestMoves,
 				 int& currentBestScore);
   void executeMove(const Move& aMove);

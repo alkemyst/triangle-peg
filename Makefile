@@ -1,6 +1,7 @@
 all: baseProblem.exe flexiSearch.exe flexiSearchFast.exe
 
 PGOPT:=
+#PGOPT:=-pg
 
 # Add -pg for gprof
 %.o: %.cpp %.h

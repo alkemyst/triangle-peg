@@ -64,8 +64,8 @@ void Triangle::print() const {
   for (int row=0; row < nSides; ++row) {
     for (int spa=row+1; spa<nSides; spa++) std::cout << " ";
     for (int col=0; col<row+1; col++) {
-      if (isEmpty(pos)) sign = " o"; // u25ef
-      else sign = " *"; // u2b24
+      if (isEmpty(pos)) sign = " ◯"; // u25ef
+      else sign = " ⬤"; // u2b24
       // Coordinate test(pos+1);
       // sign = std::to_string(test.isInside(nSides));
       std::cout << sign;
@@ -113,7 +113,7 @@ MoveVector Triangle::findLegalMoves() const {
 }
 
 void Triangle::listMoves(const MoveVector& moveVector) {
-  for (auto it : moveVector) {
+  for (const auto it : moveVector) {
     std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << std::endl;
   }
 }
@@ -144,7 +144,7 @@ bool Triangle::exploreGame(const Triangle& prevTriangle,
 }
 
 bool Triangle::exploreGameOptimal(const Triangle& prevTriangle,
-				  MoveVector moveVector,
+				  MoveVector& moveVector,
 				  MoveVector& bestMoves,
 				  int& currentBestScore) {
   auto moves = prevTriangle.findLegalMoves();
@@ -159,14 +159,14 @@ bool Triangle::exploreGameOptimal(const Triangle& prevTriangle,
   } else {
     // Did we already find a solution better than this one?
     // if not we carry on the search
-    if (currentBestScore-1 > moveVector.scoreMoves()) {
+    if (currentBestScore-1 > moveVector.scoreMoves() ) {
       // Since there are possible moves, then we can carry on recursively
       for (auto& aMove : moves) {
 	Triangle nextTriangle = prevTriangle;
 	nextTriangle.executeMove(aMove);
-	MoveVector nextMoveVector = moveVector;
-	nextMoveVector.push_back(aMove);
-	exploreGameOptimal(nextTriangle, nextMoveVector, bestMoves, currentBestScore);
+	moveVector.push_back(aMove);
+	exploreGameOptimal(nextTriangle, moveVector, bestMoves, currentBestScore);
+	moveVector.pop_back();
       }
     }
   }
