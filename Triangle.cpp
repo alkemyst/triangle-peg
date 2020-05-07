@@ -7,8 +7,8 @@
 #include "Triangle.h"
 #include "Move.h"
 
-int Triangle::nSides = 4;
-int Triangle::nSpots = nSides*(nSides+1)/2;;
+unsigned int Triangle::nSides = 4;
+unsigned int Triangle::nSpots = nSides*(nSides+1)/2;;
 
 void Triangle::setSides(int pSides) {
   nSides=pSides;
@@ -23,16 +23,25 @@ void Triangle::executeMove(const Move& aMove) {
 }
 
 bool Triangle::isEmpty(const int& iSpot) const {
-  if (emptySpots.find(iSpot) != emptySpots.end()) return true;
-  else return false;
+  return stones[iSpot-1]==0;
 }
 
 bool Triangle::isEmpty(const Coordinate& aCoord) const {
-  return isEmpty(aCoord.getSpot());
+  return stones[aCoord.Spot-1]==0;
+}
+
+bool Triangle::isFull(const int& iSpot) const {
+  return stones[iSpot-1];
+}
+
+bool Triangle::isFull(const Coordinate& aCoord) const {
+  return stones[aCoord.Spot-1];
 }
 
 void Triangle::remove(const int& iSpot) {
-  emptySpots.insert(iSpot);
+  stones[iSpot-1]=0;
+  nMarbles--;
+  emptySpots++;
 }
 
 void Triangle::remove(const Coordinate& aCoord) {
@@ -40,7 +49,9 @@ void Triangle::remove(const Coordinate& aCoord) {
 }
 
 void Triangle::add(const int& iSpot) {
-  emptySpots.erase(iSpot);
+  stones[iSpot-1]=1;
+  nMarbles++;
+  emptySpots--;
 }
 
 void Triangle::add(const Coordinate& aCoord) {
@@ -53,8 +64,8 @@ void Triangle::print() const {
   for (int row=0; row < nSides; ++row) {
     for (int spa=row+1; spa<nSides; spa++) std::cout << " ";
     for (int col=0; col<row+1; col++) {
-      if (isEmpty(pos)) sign = " ◯"; // u25ef
-      else sign = " ⬤"; // u2b24
+      if (isEmpty(pos)) sign = " o"; // u25ef
+      else sign = " *"; // u2b24
       // Coordinate test(pos+1);
       // sign = std::to_string(test.isInside(nSides));
       std::cout << sign;

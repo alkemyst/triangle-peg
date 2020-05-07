@@ -18,9 +18,9 @@ public:
   bool move(const int& direction, const int& step);
   bool move(const int& direction) { return move(direction, 1); };
   friend bool operator==(const Coordinate& lhs, const Coordinate& rhs);
+  int Spot;
   
 private:
-  int Spot;
   int A;
   int B;
   int C;

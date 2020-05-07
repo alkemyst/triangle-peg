@@ -6,6 +6,9 @@ PGOPT:=
 %.o: %.cpp %.h
 	g++ ${PGOPT} -Werror -fmax-errors=1 -O3 -c $< -o $@
 
+%.so: %.cpp %.h
+	g++ ${PGOPT} -Werror -fmax-errors=1 -shared -fPIC -std=c++11 -O3 $< -o $@
+
 %.exe: %.cpp Move.o Coordinate.o Triangle.o
 	g++ ${PGOPT} -Werror -fmax-errors=1 -O3 $< Move.o Coordinate.o Triangle.o -o $@
 
