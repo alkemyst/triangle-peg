@@ -7,9 +7,10 @@
 
 class Triangle {
 public:
-  int nSides;
-  int nSpots;
-  Triangle(int pSides) { nSides=pSides ; nSpots=nSides*(nSides+1)/2; }
+  static int nSides;
+  static int nSpots;
+  static void setSides(int nSides);
+  Triangle() {};
   std::set<int> emptySpots;
 
   bool isEmpty(const int& iSpot) const;

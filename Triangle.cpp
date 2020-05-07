@@ -7,6 +7,14 @@
 #include "Triangle.h"
 #include "Move.h"
 
+int Triangle::nSides = 4;
+int Triangle::nSpots = nSides*(nSides+1)/2;;
+
+void Triangle::setSides(int pSides) {
+  nSides=pSides;
+  nSpots=nSides*(nSides+1)/2;
+}
+
 // For now I am just moving things around
 void Triangle::executeMove(const Move& aMove) {
   remove(aMove.fromSpot);
@@ -59,13 +67,14 @@ void Triangle::print() const {
 
 MoveVector Triangle::findLegalMoves() const {
   MoveVector result;
-  for (int i=1; i<=nSpots; ++i) {
+  int i, dir;
+  for (i=1; i<=nSpots; ++i) {
     Coordinate thisSpot(i);
 
     // If there is a marble in our spot
     if (!isEmpty(thisSpot)) {
       // Check for all possible directions of movement
-      for (int dir=0; dir<6; ++dir) {
+      for (dir=0; dir<6; ++dir) {
 	Coordinate nextSpot = thisSpot;
 	// At a distance 2
 	nextSpot.move(dir, 2);

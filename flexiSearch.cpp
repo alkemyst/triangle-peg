@@ -14,7 +14,8 @@ int main(int argc, char* argv[]) {
   int side = atoi(argv[1]);
   int toRemove = atoi(argv[2]);
   
-  Triangle myTriangle(side);
+  Triangle myTriangle;
+  Triangle::setSides(side);
   myTriangle.remove(toRemove);
   
   myTriangle.print();

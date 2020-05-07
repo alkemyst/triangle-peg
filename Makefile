@@ -7,7 +7,7 @@ all: baseProblem.exe flexiSearch.exe flexiSearchFast.exe
 %.exe: %.cpp Move.o Coordinate.o Triangle.o
 	g++ -pg -Werror -fmax-errors=1 -O3 $< Move.o Coordinate.o Triangle.o -o $@
 
-profile:
+profile: flexiSearchFast.exe
 	./flexiSearchFast.exe 5 1
 	gprof ./flexiSearchFast.exe | gprof2dot/gprof2dot.py | dot -Tsvg -o output.svg
 
