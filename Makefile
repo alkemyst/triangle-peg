@@ -1,4 +1,4 @@
-all: baseProblem.exe flexiSearch.exe flexiSearchFast.exe
+all: findBestMove.exe
 
 PGOPT:=
 #PGOPT:=-pg
