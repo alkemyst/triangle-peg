@@ -6,3 +6,4 @@ gmon.out
 output.png
 output.svg
 gprof2dot/
+*.so
