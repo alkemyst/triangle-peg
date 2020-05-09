@@ -6,5 +6,4 @@ gmon.out
 output.png
 output.svg
 gprof2dot/
-test.so
-Triangle.so
+*.so
