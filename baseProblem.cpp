@@ -5,7 +5,8 @@
 #include "Move.h"
 
 int main(int argc, char* argv[]) {
-  Triangle myTriangle(4);
+  Triangle myTriangle;
+  myTriangle.setupGame(4);
   myTriangle.remove(2);
   myTriangle.print();
   std::cout << std::endl;

@@ -1,7 +1,8 @@
 #include <vector>
 #include "Move.h"
-#include "Coordinate.h"
 
+
+// TODO: add scoring as we add moves
 int MoveVector::scoreMoves() const {
   int result=0;
   for(auto it = std::vector<Move>::begin(); it != std::vector<Move>::end(); ++it) {

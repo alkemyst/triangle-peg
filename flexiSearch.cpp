@@ -13,11 +13,14 @@ int main(int argc, char* argv[]) {
 
   int side = atoi(argv[1]);
   int toRemove = atoi(argv[2]);
+
+  Triangle::setupGame(side);
   
-  Triangle myTriangle(side);
-  myTriangle.remove(toRemove);
-  
+  Triangle myTriangle;
   myTriangle.print();
+  myTriangle.remove(toRemove);
+  myTriangle.print();
+  
   std::cout << std::endl;
   std::cout << std::endl;
 
@@ -38,6 +41,14 @@ int main(int argc, char* argv[]) {
 
     std::cerr << "Best score in " << bestScore << std::endl;
     Triangle::listMoves(bestMoves);
+
+    Triangle demo = myTriangle;
+    for (auto it : bestMoves) {
+      demo.print();
+      std::cout << "From " << it.fromSpot << " to " << it.toSpot << std::endl;
+      demo.executeMove(it);
+    }
+    demo.print();
   } else {
     std::cout << "No winning moves from here" << std::endl;
   }
