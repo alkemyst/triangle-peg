@@ -10,7 +10,7 @@ PGOPT:=
 %.so: %.cpp %.h
 	g++ ${PGOPT} -Werror -fmax-errors=1 -shared -fPIC -std=c++11 -O3 $< -o $@
 
-%.exe: %.cpp Move.o Coordinate.o Triangle.o
+%.exe: %.cpp Move.o Triangle.o Coordinate.o
 	g++ ${PGOPT} -Werror -fmax-errors=1 -O3 $< Move.o Coordinate.o Triangle.o -o $@
 
 profile: flexiSearchFast.exe

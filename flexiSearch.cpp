@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
   int side = atoi(argv[1]);
   int toRemove = atoi(argv[2]);
 
-  Triangle::setSides(side);
+  Triangle::setupGame(side);
   
   Triangle myTriangle;
   myTriangle.print();
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
     Triangle demo = myTriangle;
     for (auto it : bestMoves) {
       demo.print();
-      std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << std::endl;
+      std::cout << "From " << it.fromSpot << " to " << it.toSpot << std::endl;
       demo.executeMove(it);
     }
     demo.print();

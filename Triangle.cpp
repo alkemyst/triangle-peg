@@ -9,10 +9,37 @@
 
 unsigned int Triangle::nSides = 4;
 unsigned int Triangle::nSpots = nSides*(nSides+1)/2;;
+AvailableMoveSet Triangle::availableMoves[maxSpots];
 
-void Triangle::setSides(int pSides) {
+void Triangle::setupGame(int pSides) {
   nSides=pSides;
   nSpots=nSides*(nSides+1)/2;
+
+  for (int iSpot=1; iSpot<=nSpots; ++iSpot) {
+    AvailableMoveSet& thisMoves = availableMoves[iSpot];
+
+    Coordinate thisSpot(iSpot);
+    // Check for all possible directions of movement
+    for (int dir=0; dir<6; ++dir) {
+      Coordinate nextSpot = thisSpot;
+
+      // At a distance 2
+      nextSpot.move(dir, 2);
+      // if the landing spot is still inside the triangle
+      if (nextSpot.isInside(nSides)) {
+	Coordinate captureSpot = thisSpot;
+	captureSpot.move(dir, 1);
+
+	Move newMove;
+	newMove.fromSpot = thisSpot.Spot;
+	newMove.captureSpot = captureSpot.Spot;
+	newMove.toSpot = nextSpot.Spot;
+	
+	thisMoves.push_back(newMove);
+      }
+
+    }
+  }
 }
 
 // For now I am just moving things around
@@ -23,19 +50,11 @@ void Triangle::executeMove(const Move& aMove) {
 }
 
 bool Triangle::isEmpty(const int& iSpot) const {
-  return stones[iSpot-1]==0;
-}
-
-bool Triangle::isEmpty(const Coordinate& aCoord) const {
-  return stones[aCoord.Spot-1]==0;
+  return !(stones[iSpot-1]);
 }
 
 bool Triangle::isFull(const int& iSpot) const {
   return stones[iSpot-1];
-}
-
-bool Triangle::isFull(const Coordinate& aCoord) const {
-  return stones[aCoord.Spot-1];
 }
 
 void Triangle::remove(const int& iSpot) {
@@ -44,18 +63,10 @@ void Triangle::remove(const int& iSpot) {
   emptySpots++;
 }
 
-void Triangle::remove(const Coordinate& aCoord) {
-  remove(aCoord.getSpot());
-}
-
 void Triangle::add(const int& iSpot) {
   stones[iSpot-1]=1;
   nMarbles++;
   emptySpots--;
-}
-
-void Triangle::add(const Coordinate& aCoord) {
-  add(aCoord.getSpot());
 }
 
 void Triangle::print() const {
@@ -78,33 +89,16 @@ void Triangle::print() const {
 
 MoveVector Triangle::findLegalMoves() const {
   MoveVector result;
-  int i, dir;
-  for (i=1; i<=nSpots; ++i) {
-    Coordinate thisSpot(i);
+  int thisSpot, dir;
+  for (thisSpot=1; thisSpot<=nSpots; ++thisSpot) {
 
     // If there is a marble in our spot
-    if (!isEmpty(thisSpot)) {
-      // Check for all possible directions of movement
-      for (dir=0; dir<6; ++dir) {
-	Coordinate nextSpot = thisSpot;
-	// At a distance 2
-	nextSpot.move(dir, 2);
-	// if the landing spot is still inside the triangle
-	if (nextSpot.isInside(nSides)) {
-	  // If the landing spit is free
-	  if (isEmpty(nextSpot)) {
-	    // And if there is a marble to jump over
-	    Coordinate captureSpot = thisSpot;
-	    captureSpot.move(dir, 1);
-	    if (!isEmpty(captureSpot)) {
-	      // Then we have a capture move
-	      Move newMove;
-	      newMove.fromSpot = thisSpot;
-	      newMove.toSpot = nextSpot;
-	      newMove.captureSpot = captureSpot;
-	      result.push_back(newMove);
-	    }
-	  }
+    if (isFull(thisSpot)) {
+      AvailableMoveSet& thisMoves = availableMoves[thisSpot];
+
+      for (const auto& itMove : thisMoves) {
+	if (isEmpty(itMove.toSpot) && isFull(itMove.captureSpot)) {
+	  result.push_back(itMove); // TODO: use just pointers
 	}
       }
     }
@@ -114,7 +108,7 @@ MoveVector Triangle::findLegalMoves() const {
 
 void Triangle::listMoves(const MoveVector& moveVector) {
   for (const auto it : moveVector) {
-    std::cout << "From " << it.fromSpot.getSpot() << " to " << it.toSpot.getSpot() << std::endl;
+    std::cout << "From " << it.fromSpot << " to " << it.toSpot << std::endl;
   }
 }
 

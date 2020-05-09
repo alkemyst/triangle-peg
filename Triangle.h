@@ -6,13 +6,15 @@
 #include <cstring>
 #include "Move.h"
 
+typedef std::vector<Move> AvailableMoveSet;
 
 class Triangle {
 public:
   static const int maxSpots = 7*4;
   static unsigned int nSides;
   static unsigned int nSpots;
-  static void setSides(int nSides);
+  static void setupGame(int nSides);
+  static AvailableMoveSet availableMoves[maxSpots];
   
   int emptySpots;
   int nMarbles;
@@ -31,13 +33,9 @@ public:
   }
 
   bool isEmpty(const int& iSpot) const;
-  bool isEmpty(const Coordinate& aCoord) const;
   bool isFull(const int& iSpot) const;
-  bool isFull(const Coordinate& aCoord) const;
   void remove(const int& iSpot);
   void add(const int& iSpot);
-  void remove(const Coordinate& aCoord);
-  void add(const Coordinate& aCoord);
   MoveVector findLegalMoves() const;
   void print() const;
   int getNMarbles() const { return nMarbles; };

@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[]) {
   Triangle myTriangle;
-  myTriangle.setSides(4);
+  myTriangle.setupGame(4);
   myTriangle.remove(2);
   myTriangle.print();
   std::cout << std::endl;
